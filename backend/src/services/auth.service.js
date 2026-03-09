@@ -12,7 +12,7 @@ if (checkExist){
 }
 
 //hash the password- never store plain
-const hashedPassword = await bcrypt.hash(password, 10);
+const hashedPassword = await bcrypt.hash(password, 12);
 // 10 salt rounds- higher is slower but more secure. 10-12 is the sweet spot.
 
 //create new user

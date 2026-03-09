@@ -6,13 +6,13 @@ const registerUser = async (req,res,next)=>{
         const{name,email, password} = req.body;
         const{user,token}= await register({name,email,password});
 
-        res.send(201).json({
+         return res.status(201).json({
             status:'success',
             data: {user,token}
         });
            
     } catch(err){
-        next(err); //Pass to global error handler - never handle errors in controllers
+        return next(err); //Pass to global error handler - never handle errors in controllers
     }
 };
 
@@ -21,12 +21,12 @@ const loginUser = async (req,res,next)=>{
         const {email, password} = req.body;
         const {user,token}= await login({email,password});
 
-        res.send (200).json({
+         return res.status (200).json({
             status: 'success',
             data: {user,token}  
         });
     }catch (err){
-        next(err);
+         return next(err);
     }
 };
 

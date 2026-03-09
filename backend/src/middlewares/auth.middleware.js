@@ -24,11 +24,11 @@ const protect = async (req, res, next)=> {
 
         if (!authHeader?.startsWith('Bearer ')){
             const error = new Error('No token provided');
-            error.satusCode = 401;
+            error.statusCode = 401;
             throw error;
         }
         // "Bearer eydafs.... to "eydafs"
-        const token = authHeader.split(' '[1]); //splits string to array wehrever there is space and takes 1st index values
+        const token = authHeader.split(' ')[1]; //splits string to array wehrever there is space and takes 1st index values
 
         //verify throws automatically if expired or tampered
         const decoded = verifyToken(token);
@@ -43,7 +43,7 @@ const protect = async (req, res, next)=> {
 
         //Attach user to request- available iin all downstream controllers
         req.user=user;
-        next(); // all good, move to controller
+        return next(); // all good, move to controller
         
     } catch(err){
         //Handle JWT-specific errors with clear messages
@@ -55,7 +55,7 @@ const protect = async (req, res, next)=> {
             err.message = 'Token expired, please login again';
             err.statusCode = 401;
         }
-        next(err);
+         next(err);
 
     }
 }
