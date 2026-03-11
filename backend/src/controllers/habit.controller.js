@@ -1,4 +1,4 @@
-import {create, getAll, getOne, update, remove} from "../services/habit.service.js";
+import {create, getAll, getOne, update, remove, log, getStreak, getDashboard} from "../services/habit.service.js";
 
 const createHabit = async(req,res, next)=>{
     try{
@@ -35,7 +35,7 @@ const updateHabit = async (req,res,next)=>{
     } catch (err){
         return next(err);
     }
-}
+};
 
 const removeHabit = async(req,res,next)=>{
     try{
@@ -44,6 +44,35 @@ const removeHabit = async(req,res,next)=>{
     } catch (err){
         return next(err);
     }
-}
+};
 
-export {createHabit, getHabits, getHabit, updateHabit, removeHabit };
+const logHabit = async(req,res, next)=>{
+    try{
+      
+        const entry = await log(req.params.id, req.user.id);
+        return res.status(201).json ({status: 'success', data:{entry} });
+    }catch (err){
+        return next(err);
+    }
+   
+};
+
+const getHabitStreak = async (req, res, next)=>{
+    try{
+        const data = await getStreak(req.params.id, req.user.id);
+        return res.status(200).json ({status:'success', data});
+    }catch (err){
+        return next(err);
+    }
+};
+
+const getHabitsStreaks= async(req,res,next)=>{
+    try{
+        const data = await getDashboard( req.user.id);
+        return res.status(200).json ({status:'success', data});
+    } catch(err){
+        return next(err);
+    }
+};
+
+export {createHabit, getHabits, getHabit, updateHabit, removeHabit, logHabit, getHabitStreak, getHabitsStreaks };

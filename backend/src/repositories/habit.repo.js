@@ -62,4 +62,43 @@ const deleteHabit = async (id, userId)=>{
 Never delte the user-generated content. always softdelete, never hard delete
 You can use to update streaks, for analytics, to recover and to audit
 */
-export {createHabit, findAllByUser, findByUser, updateHabit,  deleteHabit};
+
+// logHabit
+
+const logHabit = async (habitId, userId) =>{
+    const today = new Date().toISOString().split('T')[0]; //'2026-03-10'did we stringify. .split('T') [0], split the value afer t including it and [0 ] dtakes the first string .i.e date.
+
+    const {rows} = await pool.query(
+        `INSERT INTO habit_logs(habit_id, user_id, log_date, status)
+        VALUES ($1,$2,$3,true)
+        ON CONFLICT (habit_id, user_id, log_date)
+        DO UPDATE SET status= true
+        RETURNING *`, [habitId, userId, today]);
+    
+    return rows[0];
+
+};
+
+// getLogsByHabit
+const getLogsByHabit = async(habitId, userId)=>{
+    const {rows} = await pool.query(
+        `SELECT log_date FROM habit_logs
+        WHERE habit_id= $1 AND user_id= $2 AND status= true
+        ORDER BY log_date DESC`, [habitId, userId]
+    );
+    return rows;
+}
+/**This is how we implement idempotency — same request, same result, no error.
+ * 
+ * What is ON CONFLICT ... DO UPDATE?
+This is PostgreSQL's way of handling duplicates gracefully — called an upsert.
+try to INSERT
+  if unique constraint fires (already logged today)
+  instead of erroring → just UPDATE the existing row
+Why new Date().toISOString().split('T')[0]?
+new Date().toISOString() returns "2026-03-10T14:30:00.000Z"
+.split('T')[0] takes everything before the T → "2026-03-10"
+That's the format PostgreSQL DATE column expects.
+**/
+
+export {createHabit, findAllByUser, findByUser, updateHabit,  deleteHabit, logHabit, getLogsByHabit};

@@ -32,9 +32,12 @@ const protect = async (req, res, next)=> {
 
         //verify throws automatically if expired or tampered
         const decoded = verifyToken(token);
-
+       
         //Fetch fresh user data - token could be valid but user deleted
         const user = await findById(decoded.userId);
+       
+
+
         if(!user) {
             const error = new Error('User no longer exists');
             error.statusCode = 401;
@@ -44,6 +47,8 @@ const protect = async (req, res, next)=> {
         //Attach user to request- available iin all downstream controllers
         req.user=user;
         return next(); // all good, move to controller
+
+        
         
     } catch(err){
         //Handle JWT-specific errors with clear messages
@@ -59,6 +64,9 @@ const protect = async (req, res, next)=> {
 
     }
 }
+
+
+
 
 export {protect};
  /**Why fetch the user from DB even if token is valid?
