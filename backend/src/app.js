@@ -5,7 +5,7 @@ import {rateLimit} from 'express-rate-limit';
 import authRoutes from './routes/auth.route.js';
 import habitRoutes from './routes/habit.route.js';
 const app = express();
-
+app.set('trust proxy',1);
 // Security headers
 app.use(helmet());
 
