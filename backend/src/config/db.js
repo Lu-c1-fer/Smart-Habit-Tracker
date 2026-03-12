@@ -2,9 +2,9 @@ import { Pool } from "pg";
 
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
-        rejectUnauthorized: false // required for Railway PostgreSQL
-    }
+ ssl: process.env.NODE_ENV === 'production' 
+        ? { rejectUnauthorized: false }  // Railway needs SSL
+        : false                           // Local doesn't use SSL
 });
 
 pool.connect((err) => {
