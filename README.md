@@ -199,8 +199,8 @@ smart-habit-tracker/
 ## 👨‍💻 Author
 
 **Ayush Thapa**
-- GitHub: [@yourusername](https://github.com/yourusername)
-- LinkedIn: [your-linkedin](https://linkedin.com/in/yourlinkedin)
+-LinkedIn Profile:  www.linkedin.com/in/ayush-thapa-181507245
+-GitHub Profile: https://github.com/Lu-c1-fer 
 
 ---
 
