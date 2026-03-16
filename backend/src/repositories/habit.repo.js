@@ -5,7 +5,7 @@ const createHabit = async ({userId, title, description, frequency, reminderTime,
     const {rows}= await pool.query(
         `INSERT INTO habits(user_id, title, description, frequency, reminder_time)
         VALUES ($1, $2, $3, $4, $5)
-        RETURNING *`,[userId, title, description, frequency, reminderTime] 
+        RETURNING *`,[userId, title, description, frequency, reminderTime || null] 
     );
     return rows[0];// why rows first column when you are returning all the columns
 };
@@ -43,7 +43,7 @@ const updateHabit = async(id, userId,updates)=>{
             frequency = COALESCE($3, frequency),
             reminder_time= COALESCE($4, reminder_time) 
         WHERE id= $5 AND user_id= $6
-        RETURNING *`, [updates.title, updates.description, updates.frequency, updates.reminder_time,id, userId] // updates object gets created. 
+        RETURNING *`, [updates.title, updates.description, updates.frequency, updates.reminder_time,id, userId || null] // updates object gets created. 
 
     );
     return rows[0] ?? null;
@@ -67,7 +67,7 @@ You can use to update streaks, for analytics, to recover and to audit
 
 const logHabit = async (habitId, userId) =>{
     const today = new Date().toISOString().split('T')[0]; //'2026-03-10'did we stringify. .split('T') [0], split the value afer t including it and [0 ] dtakes the first string .i.e date.
-
+ 
     const {rows} = await pool.query(
         `INSERT INTO habit_logs(habit_id, user_id, log_date, status)
         VALUES ($1,$2,$3,true)

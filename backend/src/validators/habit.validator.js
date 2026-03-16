@@ -19,7 +19,8 @@ const createHabitSchema = z.object({
     .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, {
       message: 'Reminder time must be in HH:MM format',
     })
-    .optional(),
+    .optional()
+    .or(z.literal('')),
 
 });
 

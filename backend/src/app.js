@@ -5,7 +5,7 @@ import {rateLimit} from 'express-rate-limit';
 import authRoutes from './routes/auth.route.js';
 import habitRoutes from './routes/habit.route.js';
 const app = express();
-app.set('trust proxy',true);
+app.set('trust proxy',1);
 // Security headers
 app.use(helmet());
 
@@ -33,14 +33,9 @@ app.use(globalLimiter);
 
 // ── Auth rate limiting — stricter on login/register ─────────────
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,  // 15 minutes
-  max: 10,                    // only 10 attempts per 15 min
-  message: {
-    status: 'error',
-    message: 'Too many login attempts, please try again after 15 minutes',
-  },
-  standardHeaders: true,
-  legacyHeaders: false,
+  windowMs: 15 * 60 * 1000,
+  max: process.env.NODE_ENV === 'production' ? 10 : 100,
+  message: 'Too many login attempts, please try again after 15 minutes'
 });
 app.use(express.json()); //parse JSON bodies
 

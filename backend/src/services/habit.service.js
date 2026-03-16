@@ -117,21 +117,30 @@ const getStreak = async (habitId, userId)=>{
 };
 
 //get streak for all the habits user have
-const getDashboard = async (userId)=>{
-    const habits = await findAllByUser(userId); // gets all the habits user has
+const getDashboard = async (userId) => {
+  const habits = await findAllByUser(userId);
 
-    const habitsWithStreaks = await Promise.all( // all the habits are simultaneously processed, all the habits streak are calculated at same time
-        habits.map(async(habit)=>{    // will go through all the habits
-            const logs = await getLogsByHabit(habit.id, userId); // will go to that specific habit takes its id and user id and willl get habit logs date from the habit log table
-            const streak = calculateStreak(logs); // will calculate that specific habits streak
-            return {...habit, streak, totalLogs: logs.length};// will create an object and keeps on passing the previous habit and its streak and continue with another hait until map goes through all the habits
-        })
-    );
-    return {
-        totalHabits: habits.length, // toatal number of habits
-        habits: habitsWithStreaks, // all the habits with their respective streak and logs length
-    };
+  const habitsWithStreaks = await Promise.all(
+   habits.map(async (habit) => {
+  const logs = await getLogsByHabit(habit.id, userId);
+  const todayStr = new Date().toISOString().split('T')[0]; // 2026-03-16
 
+const completedToday = logs.some(log => {
+  // Add 12 hours to avoid timezone shift issues
+  const logDate = new Date(new Date(log.log_date).getTime() + 12 * 60 * 60 * 1000)
+    .toISOString().split('T')[0];
+  return logDate === todayStr;
+});
+  
+  const streak = calculateStreak(logs);
+  return { ...habit, streak, totalLogs: logs.length, completedToday };
+})
+  );
+
+  return {
+    totalHabits: habits.length,
+    habits: habitsWithStreaks,
+  };
 };
 
 export {create, getAll, getOne, update, remove,log, getStreak, getDashboard};
