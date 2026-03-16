@@ -15,24 +15,23 @@ const createHabitSchema = z.object({
         error: 'Frequency must be daily, weekly or monthly'
     }).default('daily'),
 
-    reminderTime: z.string()
-    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, {
-      message: 'Reminder time must be in HH:MM format',
-    })
-    .optional()
-    .or(z.literal('')),
+  reminderTime: z.string()
+  .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/, {
+    message: 'Reminder time must be in HH:MM format',
+  })
+  .optional()
+  .or(z.literal(''))
 
 });
 
 //udpate schema - all fields optioinal
 const updateHabitSchema= createHabitSchema.partial().extend({
-    reminderTime: z.string()
-    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, {
-      message: 'Reminder time must be in HH:MM format',
-    })
-    .optional()
-    .or(z.literal(''))
-    .nullable()
+   reminderTime: z.string()
+  .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/, {
+    message: 'Reminder time must be in HH:MM format',
+  })
+  .optional()
+  .or(z.literal(''))
 }); // partial() makes every field in the schema optional. so fro updates, the user can send the fields they want to change. one liine instead of rewritin the whole schema, object
 
 export{createHabitSchema, updateHabitSchema};
