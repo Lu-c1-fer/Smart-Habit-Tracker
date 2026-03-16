@@ -25,6 +25,14 @@ const createHabitSchema = z.object({
 });
 
 //udpate schema - all fields optioinal
-const updateHabitSchema= createHabitSchema.partial(); // partial() makes every field in the schema optional. so fro updates, the user can send the fields they want to change. one liine instead of rewritin the whole schema, object
+const updateHabitSchema= createHabitSchema.partial().extend({
+    reminderTime: z.string()
+    .regex(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, {
+      message: 'Reminder time must be in HH:MM format',
+    })
+    .optional()
+    .or(z.literal(''))
+    .nullable()
+}); // partial() makes every field in the schema optional. so fro updates, the user can send the fields they want to change. one liine instead of rewritin the whole schema, object
 
 export{createHabitSchema, updateHabitSchema};
