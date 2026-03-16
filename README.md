@@ -1,81 +1,162 @@
-# 🧠 Smart Habit Tracker API
+# 🌿 Smart Habit Tracker
 
-A production-ready RESTful API for tracking daily habits and streaks, built with Node.js, Express, and PostgreSQL. Features secure JWT authentication, rate limiting, and comprehensive test coverage.
+A full stack habit tracking application with streak calculations, JWT authentication, and a polished React frontend. Built to demonstrate production-ready development practices including layered architecture, input validation, rate limiting, automated testing, and cloud deployment.
 
-🚀 **Live API:** [https://smart-habit-tracker-production-d573.up.railway.app](https://smart-habit-tracker-production-d573.up.railway.app)
+**🔗 Live Demo:** [smart-habit-tracker-rouge.vercel.app](https://smart-habit-tracker-rouge.vercel.app)  
+**📡 API:** [smart-habit-tracker-production-d573.up.railway.app](https://smart-habit-tracker-production-d573.up.railway.app)  
+**📁 Repo:** [github.com/Lu-c1-fer/Smart-Habit-Tracker](https://github.com/Lu-c1-fer/Smart-Habit-Tracker)
 
 ---
 
-## 📌 Features
+## 📸 Screenshots
 
-- 🔐 **JWT Authentication** — Secure register and login with token-based auth
-- 🛡️ **Rate Limiting** — API abuse prevention on all endpoints
-- 📋 **Habit Management** — Full CRUD operations for habits
-- 📈 **Streak Tracking** — Automatic streak calculation with grace period logic
-- ✅ **Tested** — Unit and integration tests written with Jest and Supertest
-- ☁️ **Deployed** — Live on Railway with PostgreSQL database
+> - Login page
+![login page](image.png)
+
+> - Dashboard with habits
+
+![users dashboard](image-1.png)
+
+> - Add habit modal
+
+![Add new habit](image-2.png)
+
+> - Track progress, streak 
+
+![tracking streak, progress, completion of habit for the day](image-3.png)
+
+---
+
+## ✨ Features
+
+- 🔐 **JWT Authentication** — Secure register & login with token-based auth
+- 📋 **Habit Management** — Create, edit, delete habits with title, description, frequency & reminder time
+- 🔥 **Streak Tracking** — Automatic streak calculation with grace period logic
+- 📊 **Dashboard Analytics** — Progress bar, best streak, daily completion stats
+- 🏆 **Streak Badges** — Milestone badges at 3, 7, 14, 30, 100, 365 days
+- 🌤️ **Time-aware Greeting** — Dynamic greeting based on time of day
+- 🛡️ **Security** — Helmet.js headers, rate limiting, input validation with Zod
+- ✅ **Tested** — Unit and integration tests with Jest & Supertest
+- ☁️ **Deployed** — Frontend on Vercel, Backend + PostgreSQL on Railway
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Runtime | Node.js |
-| Framework | Express.js |
-| Database | PostgreSQL |
-| Authentication | JWT (JSON Web Tokens) |
-| Testing | Jest + Supertest |
-| Deployment | Railway |
+### Frontend
+| Technology | Purpose |
+|-----------|---------|
+| React + Vite | UI framework & bundler |
+| React Router v6 | Client-side routing |
+| Axios | HTTP client with interceptors |
+| CSS Modules | Scoped component styling |
+
+### Backend
+| Technology | Purpose |
+|-----------|---------|
+| Node.js + Express | Server & REST API |
+| PostgreSQL | Relational database |
+| JWT | Authentication tokens |
+| bcryptjs | Password hashing |
+| Zod | Request validation |
+| Helmet + Rate Limit | Security hardening |
+| Jest + Supertest | Testing |
+
+### Infrastructure
+| Service | Purpose |
+|---------|---------|
+| Railway | Backend + PostgreSQL hosting |
+| Vercel | Frontend hosting + CDN |
+| GitHub | Version control + CI |
 
 ---
 
-## 📡 API Endpoints
+## 🏗️ Architecture
 
-### Auth
-
-| Method | Endpoint | Description | Auth Required |
-|---|---|---|---|
-| POST | `/api/auth/register` | Register a new user | ❌ |
-| POST | `/api/auth/login` | Login and receive JWT token | ❌ |
-
-### Habits
-
-| Method | Endpoint | Description | Auth Required |
-|---|---|---|---|
-| GET | `/api/habits` | Get all habits for logged in user | ✅ |
-| POST | `/api/habits` | Create a new habit | ✅ |
-| PUT | `/api/habits/:id` | Update an existing habit | ✅ |
-| DELETE | `/api/habits/:id` | Delete a habit | ✅ |
-
----
-
-## 🔐 Authentication
-
-This API uses **JWT (JSON Web Tokens)** for authentication. After registering or logging in, include the token in the Authorization header for all protected routes:
+The backend follows a strict layered architecture — each layer has one responsibility:
 
 ```
-Authorization: Bearer <your_token_here>
+Request → Route → Controller → Service → Repository → Database
+```
+
+```
+backend/src/
+├── routes/          # URL definitions only
+├── controllers/     # HTTP in/out only (req/res)
+├── services/        # Business logic (streak calculation, auth)
+├── repositories/    # SQL queries only
+├── middlewares/     # Auth guard, validation, error handler
+├── validators/      # Zod schemas
+├── config/          # DB connection, environment
+└── utils/           # JWT helpers
+```
+
+```
+frontend/src/
+├── pages/           # Login, Register, Dashboard
+├── context/         # AuthContext (global auth state)
+└── lib/             # Axios instance, API calls
 ```
 
 ---
 
-## 📊 Streak Logic
+## 📡 API Reference
 
-The streak calculation handles real-world edge cases:
+### Auth Routes
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| POST | `/api/auth/register` | Register new user | ❌ |
+| POST | `/api/auth/login` | Login, receive JWT | ❌ |
 
-- ✅ Counts consecutive days logged
-- ✅ **Grace period** — streak preserved if user hasn't logged today but logged yesterday
-- ✅ Streak resets if last log was 2+ days ago
-- ✅ Uses Set-based O(1) date lookups for performance
+### Habit Routes
+| Method | Endpoint | Description | Auth |
+|--------|----------|-------------|------|
+| GET | `/api/habits/dashboard` | Get all habits with streaks | ✅ |
+| POST | `/api/habits` | Create a habit | ✅ |
+| PATCH | `/api/habits/:id` | Update a habit | ✅ |
+| DELETE | `/api/habits/:id` | Soft delete a habit | ✅ |
+| POST | `/api/habits/:id/log` | Mark habit complete today | ✅ |
+| GET | `/api/habits/:id/streak` | Get streak for one habit | ✅ |
+
+### Authentication
+All protected routes require a Bearer token:
+```
+Authorization: Bearer <your_jwt_token>
+```
 
 ---
 
-## 🧪 Testing
+## 🔥 Streak Logic
 
-The project includes both unit and integration tests:
+The streak engine handles real-world edge cases:
 
-**Unit Tests — Streak Calculation**
+- ✅ Counts consecutive days with completed logs
+- ✅ **Grace period** — streak preserved if user logged yesterday but not today yet
+- ✅ Streak resets to 0 if last log was 2+ days ago
+- ✅ Uses `Set`-based O(1) date lookups for performance
+- ✅ Soft-delete preserves historical log data for accurate streak history
+
+---
+
+## 🧪 Tests
+
+```bash
+cd backend
+npm test
+```
+
+**15 tests across 2 test suites:**
+
+**Auth Integration Tests (auth.test.js)**
+- Register returns 201 + JWT token
+- Duplicate email returns 409
+- Missing fields return 400 with validation errors
+- Weak password rejected with field-specific error
+- Login returns 200 + JWT token
+- Wrong credentials return 401 (same message — prevents user enumeration)
+- Missing login fields return 400
+
+**Streak Unit Tests (streak.test.js)**
 - Empty logs return 0
 - Single day streak
 - Consecutive day streaks
@@ -83,127 +164,140 @@ The project includes both unit and integration tests:
 - Grace period handling
 - Long streak (30 days) accuracy
 
-**Integration Tests — Authentication**
-- Successful registration returns JWT token
-- Duplicate email returns 409
-- Missing fields return 400 with validation errors
-- Weak password rejected with specific field error
-- Successful login returns JWT token
-- Wrong credentials return 401 (identical message prevents user enumeration)
-- Missing fields on login return 400
-
-```bash
-# Run tests
-npm test
-```
-
 ---
 
-## 🚀 Getting Started Locally
+## 🚀 Running Locally
 
 ### Prerequisites
 - Node.js v18+
 - PostgreSQL
 - npm
 
-### Installation
+### Backend Setup
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/smart-habit-tracker.git
-
-# Navigate into the project
-cd smart-habit-tracker
+# Clone the repo
+git clone https://github.com/Lu-c1-fer/Smart-Habit-Tracker.git
+cd Smart-Habit-Tracker/backend
 
 # Install dependencies
 npm install
 
-# Set up environment variables
+# Create .env file
 cp .env.example .env
 ```
 
-### Environment Variables
-
-Create a `.env` file in the root directory:
-
+Fill in your `.env`:
 ```env
-DATABASE_URL=your_postgresql_connection_string
-JWT_SECRET=your_jwt_secret
+DATABASE_URL=postgresql://postgres:password@localhost:5432/habittracker
+JWT_SECRET=your_super_secret_key
 PORT=3000
 NODE_ENV=development
+FRONTEND_URL=http://localhost:5173
 ```
-
-### Run the App
 
 ```bash
-# Development
+# Run development server
 npm run dev
-
-# Production
-npm start
 ```
+
+### Frontend Setup
+
+```bash
+cd ../frontend
+npm install
+```
+
+Create `.env`:
+```env
+VITE_API_URL=http://localhost:3000/api
+```
+
+```bash
+npm run dev
+```
+
+App will be running at `http://localhost:5173`
+
+---
+
+## 🔒 Security Features
+
+- **Helmet.js** — Sets 15+ HTTP security headers automatically
+- **Rate Limiting** — 100 req/15min globally, 10 req/15min on auth routes
+- **bcrypt** — Passwords hashed with 12 salt rounds (never stored plain)
+- **JWT expiry** — Tokens expire after 15 minutes
+- **Zod validation** — All request bodies validated before hitting business logic
+- **Soft delete** — User data never permanently deleted
+- **User enumeration prevention** — Same error message for wrong email/password
+- **trust proxy** — Correctly configured for Railway's reverse proxy
 
 ---
 
 ## 📁 Project Structure
 
 ```
-smart-habit-tracker/
+Smart-Habit-Tracker/
 ├── backend/
 │   ├── src/
 │   │   ├── config/
-│   │   │   ├── db.js              # PostgreSQL connection
-│   │   │   └── env.js             # Environment variable config
+│   │   │   └── db.js
 │   │   ├── controllers/
-│   │   │   ├── auth.controller.js # Auth request handling
-│   │   │   └── habit.controller.js# Habit request handling
+│   │   │   ├── auth.controller.js
+│   │   │   └── habit.controller.js
 │   │   ├── middlewares/
-│   │   │   ├── auth.middleware.js # JWT verification
-│   │   │   └── validate.js        # Request validation middleware
+│   │   │   ├── auth.middleware.js
+│   │   │   └── validate.js
 │   │   ├── repositories/
-│   │   │   ├── habit.repo.js      # Habit database queries
-│   │   │   └── user.repo.js       # User database queries
+│   │   │   ├── user.repo.js
+│   │   │   └── habit.repo.js
 │   │   ├── routes/
-│   │   │   ├── auth.route.js      # Auth routes
-│   │   │   └── habit.route.js     # Habit routes
+│   │   │   ├── auth.route.js
+│   │   │   └── habit.route.js
 │   │   ├── services/
-│   │   │   ├── auth.service.js    # Auth business logic
-│   │   │   └── habit.service.js   # Habit business logic
+│   │   │   ├── auth.service.js
+│   │   │   └── habit.service.js
 │   │   ├── tests/
-│   │   │   ├── auth.test.js       # Integration tests
-│   │   │   └── streak.test.js     # Unit tests
-│   │   ├── utils/
-│   │   │   └── jwt.js             # JWT utility functions
+│   │   │   ├── auth.test.js
+│   │   │   └── streak.test.js
 │   │   ├── validators/
-│   │   │   ├── auth.validator.js  # Auth input validation
-│   │   │   └── habit.validator.js # Habit input validation
-│   │   ├── app.js                 # Express app setup
-│   │   └── server.js              # Entry point
-│   ├── .gitignore
-│   ├── nodemon.json
+│   │   │   ├── auth.validator.js
+│   │   │   └── habit.validator.js
+│   │   ├── utils/
+│   │   │   └── jwt.js
+│   │   ├── app.js
+│   │   └── server.js
+│   └── package.json
+├── frontend/
+│   ├── src/
+│   │   ├── context/
+│   │   │   └── AuthContext.jsx
+│   │   ├── lib/
+│   │   │   ├── api.js
+│   │   │   └── habits.js
+│   │   ├── pages/
+│   │   │   ├── Login.jsx
+│   │   │   ├── Register.jsx
+│   │   │   └── Dashboard.jsx
+│   │   ├── App.jsx
+│   │   └── main.jsx
 │   └── package.json
 └── README.md
 ```
 
----
 
-## 🔮 Upcoming Features
-
-- [ ] React frontend (in progress)
-- [ ] Habit completion logging per day
-- [ ] Weekly and monthly streak reports
-- [ ] Timezone-aware streak calculation
 
 ---
 
 ## 👨‍💻 Author
 
 **Ayush Thapa**
--LinkedIn Profile:  www.linkedin.com/in/ayush-thapa-181507245
--GitHub Profile: https://github.com/Lu-c1-fer 
+
+- 🔗 [LinkedIn](https://www.linkedin.com/in/ayush-thapa-181507245)
+- 🐙 [GitHub](https://github.com/Lu-c1-fer)
 
 ---
 
 ## 📄 License
 
-MIT License — feel free to use this project as a reference.
+MIT License — feel free to use this project as a reference or starting point.
