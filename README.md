@@ -1,12 +1,36 @@
 # 🌿 Smart Habit Tracker
 
-A full stack habit tracking application with streak calculations, JWT authentication, and a polished React frontend. Built to demonstrate production-ready development practices including layered architecture, input validation, rate limiting, automated testing, and cloud deployment.
+A production-ready full stack habit tracking application built with React, Node.js, and PostgreSQL.
+
+The app focuses on real-world backend engineering practices including authentication, data validation, rate limiting, and efficient streak calculation logic, while delivering a clean and responsive frontend experience.
+
+💡 Why I Built This
+
+Most habit tracking apps fail to handle real-world streak logic correctly (e.g. missing one day, grace periods, consistency tracking).
+
+I built this project to:
+
+Design a realistic and efficient streak calculation system
+
+Practice production-level backend architecture
+
+Implement secure authentication and API protection
+
+Simulate real-world SaaS application development
 
 **🔗 Live Demo:** [smart-habit-tracker-rouge.vercel.app](https://smart-habit-tracker-rouge.vercel.app)  
 **📡 API:** [smart-habit-tracker-production-d573.up.railway.app](https://smart-habit-tracker-production-d573.up.railway.app)  
 **📁 Repo:** [github.com/Lu-c1-fer/Smart-Habit-Tracker](https://github.com/Lu-c1-fer/Smart-Habit-Tracker)
 
 ---
+
+🔑 Demo Account
+
+Use this to quickly test the app without signing up
+
+Email: test4@example.com
+
+Password: Test1234!
 
 ## 📸 Screenshots
 
@@ -40,6 +64,18 @@ A full stack habit tracking application with streak calculations, JWT authentica
 - ☁️ **Deployed** — Frontend on Vercel, Backend + PostgreSQL on Railway
 
 ---
+
+🧠 Key Engineering Decisions
+
+Used layered architecture to separate concerns and improve scalability
+
+Implemented Set-based streak calculation for O(1) lookups
+
+Applied rate limiting on auth routes to prevent brute-force attacks
+
+Used Zod for runtime validation instead of relying only on frontend
+
+Designed soft delete to preserve historical data integrity
 
 ## 🛠️ Tech Stack
 
@@ -286,7 +322,17 @@ Smart-Habit-Tracker/
 ```
 
 
+📚 What I Learned
 
+Designing scalable backend architecture
+
+Implementing secure JWT authentication
+
+Handling real-world edge cases in logic (streaks)
+
+Writing reliable tests (unit + integration)
+
+Deploying full stack apps to cloud platforms
 ---
 
 ## 👨‍💻 Author
